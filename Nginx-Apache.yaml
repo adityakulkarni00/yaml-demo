@@ -1,0 +1,49 @@
+---
+- name: Install Nginx and Apache with HTML files
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy Nginx HTML file
+      copy:
+        src: /path/to/nginx/index.html
+        dest: /var/www/html/index.html
+      notify: Restart Nginx
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Start Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Copy Apache HTML file
+      copy:
+        src: /path/to/apache/index.html
+        dest: /var/www/html/index.html
+      notify: Restart Apache
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
